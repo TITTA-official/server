@@ -21,7 +21,13 @@ export const loginValidator = async (email, password) => {
   }
 };
 
-export const registerValidator = async (email, password, username, type) => {
+export const registerValidator = async (
+  email,
+  password,
+  username,
+  type,
+  confPassword
+) => {
   const schema = Joi.object({
     username: Joi.string().alphanum().min(3).max(30).required(),
     email: Joi.string()
@@ -34,6 +40,10 @@ export const registerValidator = async (email, password, username, type) => {
       .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
       .required(),
     type: Joi.string(),
+    password_confirmation: Joi.any()
+      .equal(Joi.ref("password"))
+      .required()
+      .options({ messages: { "any.only": "{{#label}} does not match" } }),
   });
 
   try {
@@ -42,6 +52,7 @@ export const registerValidator = async (email, password, username, type) => {
       password,
       username,
       type,
+      password_confirmation: confPassword,
     });
     return result;
   } catch (error) {

@@ -24,23 +24,40 @@ usersRouter.post("/login", async (req, res) => {
       if (error) {
         return res.status(200).json({ registration: "failed" });
       }
+      console.log(results);
+      if (results.length > 0) {
+        let hash = results[0]?.password;
+        let check = await bcrypt.compare(result.password, hash);
 
-      let hash = results[0].password;
-      let check = await bcrypt.compare(result.password, hash);
-
-      if (!check) {
-        return res.status(200).json({ success: false });
+        if (!check) {
+          return res.status(200).json({ success: false });
+        }
+        let token = jwt.sign(result, secretKey, { expiresIn: 60 * 60 * 24 });
+        return res.status(200).json({
+          success: true,
+          token,
+          user: {
+            username: results[0]?.username,
+            email: results[0]?.email,
+            type: results[0].type,
+          },
+        });
       }
-      let token = jwt.sign(result, secretKey, { expiresIn: 60 * 60 * 24 });
-      return res.status(200).json({ success: true, token });
+      return res.status(200).json({ error: "user not found" });
     }
   );
 });
 
 usersRouter.post("/register", async (req, res) => {
-  const { email, password, username, type } = req.body;
+  const { email, password, username, type, confPassword } = req.body;
 
-  const result = await registerValidator(email, password, username, type);
+  const result = await registerValidator(
+    email,
+    password,
+    username,
+    type,
+    confPassword
+  );
   if (result.details) {
     return res.status(200).json({ error: result.details[0].message });
   }
@@ -73,7 +90,7 @@ usersRouter.post("/register", async (req, res) => {
                   expiresIn: 60 * 60 * 24,
                 });
                 return res
-                  .status(200)
+                  .status(201)
                   .json({ registration: "successfull", token });
               }
               return res.status(500).json({ error: "internal server error" });
