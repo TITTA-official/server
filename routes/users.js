@@ -24,7 +24,6 @@ usersRouter.post("/login", async (req, res) => {
       if (error) {
         return res.status(200).json({ registration: "failed" });
       }
-      console.log(results);
       if (results.length > 0) {
         let hash = results[0]?.password;
         let check = await bcrypt.compare(result.password, hash);
@@ -91,7 +90,11 @@ usersRouter.post("/register", async (req, res) => {
                 });
                 return res
                   .status(201)
-                  .json({ registration: "successfull", token });
+                  .json({
+                    registration: "successfull",
+                    token,
+                    user: { username, email, type },
+                  });
               }
               return res.status(500).json({ error: "internal server error" });
             }
