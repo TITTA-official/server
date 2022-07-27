@@ -81,20 +81,23 @@ usersRouter.post("/register", async (req, res) => {
           //console.log(hash);
           connection.query(
             "INSERT INTO `users` SET ?",
-            { username, email, password: hash, type },
+            {
+              username,
+              email,
+              password: hash,
+              type: type ? "admin" : null,
+            },
             (error, results, fields) => {
               //console.log(error);
               if (!error) {
                 let token = jwt.sign(result, secretKey, {
                   expiresIn: 60 * 60 * 24,
                 });
-                return res
-                  .status(201)
-                  .json({
-                    registration: "successfull",
-                    token,
-                    user: { username, email, type },
-                  });
+                return res.status(201).json({
+                  registration: "successfull",
+                  token,
+                  user: { username, email, type },
+                });
               }
               return res.status(500).json({ error: "internal server error" });
             }

@@ -39,7 +39,7 @@ export const registerValidator = async (
     password: Joi.string()
       .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
       .required(),
-    type: Joi.string(),
+    type: Joi.boolean(),
     password_confirmation: Joi.any()
       .equal(Joi.ref("password"))
       .required()
