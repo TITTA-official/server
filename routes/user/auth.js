@@ -1,15 +1,18 @@
 import { Router } from "express";
-import { loginValidator, registerValidator } from "../utils/validate.js";
+import {
+  loginValidator,
+  registerValidator,
+} from "../../utils/authValidator.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import connection from "../utils/db.js";
+import connection from "../../utils/db.js";
 import "dotenv/config";
 
 const secretKey = process.env.SECRET_KEY;
 
-const usersRouter = new Router();
+const AuthRouter = new Router();
 
-usersRouter.post("/login", async (req, res) => {
+AuthRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const result = await loginValidator(email, password);
@@ -29,7 +32,9 @@ usersRouter.post("/login", async (req, res) => {
         let check = await bcrypt.compare(result.password, hash);
 
         if (!check) {
-          return res.status(200).json({ success: false });
+          return res
+            .status(200)
+            .json({ success: false, error: "wrong email or password" });
         }
         let token = jwt.sign(result, secretKey, { expiresIn: 60 * 60 * 24 });
         return res.status(200).json({
@@ -47,14 +52,13 @@ usersRouter.post("/login", async (req, res) => {
   );
 });
 
-usersRouter.post("/register", async (req, res) => {
+AuthRouter.post("/register", async (req, res) => {
   const { email, password, username, type, confPassword } = req.body;
 
   const result = await registerValidator(
     email,
     password,
     username,
-    type,
     confPassword
   );
   if (result.details) {
@@ -85,7 +89,6 @@ usersRouter.post("/register", async (req, res) => {
               username,
               email,
               password: hash,
-              type: type ? "admin" : null,
             },
             (error, results, fields) => {
               //console.log(error);
@@ -108,4 +111,4 @@ usersRouter.post("/register", async (req, res) => {
   );
 });
 
-export default usersRouter;
+export default AuthRouter;

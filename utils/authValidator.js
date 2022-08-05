@@ -25,7 +25,6 @@ export const registerValidator = async (
   email,
   password,
   username,
-  type,
   confPassword
 ) => {
   const schema = Joi.object({
@@ -39,7 +38,6 @@ export const registerValidator = async (
     password: Joi.string()
       .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
       .required(),
-    type: Joi.boolean(),
     password_confirmation: Joi.any()
       .equal(Joi.ref("password"))
       .required()
@@ -51,7 +49,6 @@ export const registerValidator = async (
       email,
       password,
       username,
-      type,
       password_confirmation: confPassword,
     });
     return result;
