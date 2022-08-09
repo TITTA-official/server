@@ -1,12 +1,12 @@
+import bcrypt from "bcryptjs";
+import "dotenv/config";
 import { Router } from "express";
+import jwt from "jsonwebtoken";
 import {
   loginValidator,
   registerValidator,
 } from "../../utils/authValidator.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import connection from "../../utils/db.js";
-import "dotenv/config";
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -36,7 +36,9 @@ AuthRouter.post("/login", async (req, res) => {
             .status(200)
             .json({ success: false, error: "wrong email or password" });
         }
-        let token = jwt.sign(result, secretKey, { expiresIn: 60 * 60 * 24 });
+        let token = jwt.sign(results[0], secretKey, {
+          expiresIn: 60 * 60 * 24,
+        });
         return res.status(200).json({
           success: true,
           token,
@@ -53,7 +55,7 @@ AuthRouter.post("/login", async (req, res) => {
 });
 
 AuthRouter.post("/register", async (req, res) => {
-  const { email, password, username, type, confPassword } = req.body;
+  const { email, password, username, confPassword } = req.body;
 
   const result = await registerValidator(
     email,
@@ -89,17 +91,26 @@ AuthRouter.post("/register", async (req, res) => {
               username,
               email,
               password: hash,
+              type: "user",
             },
-            (error, results, fields) => {
-              //console.log(error);
+            (error, resultsX, fields) => {
               if (!error) {
-                let token = jwt.sign(result, secretKey, {
-                  expiresIn: 60 * 60 * 24,
-                });
+                let token = jwt.sign(
+                  {
+                    username,
+                    email,
+                    password: hash,
+                    type: "user",
+                  },
+                  secretKey,
+                  {
+                    expiresIn: 60 * 60 * 24,
+                  }
+                );
                 return res.status(201).json({
                   registration: "successfull",
                   token,
-                  user: { username, email, type },
+                  user: { username, email, type: "user" },
                 });
               }
               return res.status(500).json({ error: "internal server error" });

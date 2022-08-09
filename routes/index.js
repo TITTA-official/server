@@ -1,6 +1,6 @@
 import { Router } from "express";
-import connection from "../utils/db.js";
 import tokenValidator from "../middleware/tokenValidator.js";
+import connection from "../utils/db.js";
 
 const index = new Router();
 
@@ -10,11 +10,20 @@ index.get("/", (req, res) => {
   });
 });
 
+//redirect user with token
+index.get("/authenticate", tokenValidator, (req, res) => {
+  let user = req.user;
+  if (!user) return res.status(200).json({ error: "token is required" });
+  return res.status(200).json({ user });
+});
+
 //get all users
 index.get("/users", tokenValidator, (req, res) => {
+  const { type } = req.user;
   connection.query(
-    "SELECT ??, ??, ??, ?? FROM `users` ",
-    ["username", "email", "type", "id"],
+    "SELECT ??, ??, ??, ?? FROM `users` WHERE `type` != ?" +
+      `${type === "admin" && "AND `type` != 'superadmin'"}`,
+    ["username", "email", "type", "id", type],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({ results });

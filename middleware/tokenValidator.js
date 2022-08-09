@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
 import "dotenv/config";
+import jwt from "jsonwebtoken";
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -11,6 +11,8 @@ const tokenValidator = (req, res, next) => {
   try {
     const verification = jwt.verify(token, secretKey);
     if (verification) {
+      let { username, id, type, email } = verification;
+      req.user = { username, id, type, email };
       next();
     }
   } catch (err) {

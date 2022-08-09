@@ -1,10 +1,11 @@
-import express from "express";
 import cors from "cors";
-import AuthRouter from "./routes/user/auth.js";
-import index from "./routes/index.js";
 import "dotenv/config";
-import SurveyRouter from "./routes/user/admin/survey.js";
+import express from "express";
 import tokenValidator from "./middleware/tokenValidator.js";
+import index from "./routes/index.js";
+import SurveyRouter from "./routes/user/admin/survey.js";
+import UploadRouter from "./routes/user/admin/upload.js";
+import AuthRouter from "./routes/user/auth.js";
 
 const app = express();
 
@@ -18,6 +19,9 @@ app.use("/api/v1/auth", AuthRouter);
 
 //for survey
 app.use("/api/v1/admin", tokenValidator, SurveyRouter);
+
+//for upload
+app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
 
 app.use("/api/v1", index);
 
