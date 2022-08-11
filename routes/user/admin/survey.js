@@ -49,7 +49,7 @@ SurveyRouter.post("/post_survey", (req, res) => {
       //console.log(error);
       if (!error) {
         return res.status(201).json({
-          results,
+          message: "survey created successfully",
         });
       }
       return res.status(500).json({ error: "internal server error" });
@@ -79,7 +79,6 @@ SurveyRouter.patch("/update_survey/:id", (req, res) => {
 
 SurveyRouter.delete("/delete_survey/:id", (req, res) => {
   const { id } = req.params;
-  const { survey } = req.body;
 
   if (!id) {
     return res.status(400).json({ error: "survey ID required" });

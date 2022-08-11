@@ -25,7 +25,7 @@ AuthRouter.post("/login", async (req, res) => {
     [result.email],
     async (error, results) => {
       if (error) {
-        return res.status(200).json({ registration: "failed" });
+        return res.status(500).json({ error: error });
       }
       if (results.length > 0) {
         let hash = results[0]?.password;
@@ -33,7 +33,7 @@ AuthRouter.post("/login", async (req, res) => {
 
         if (!check) {
           return res
-            .status(200)
+            .status(401)
             .json({ success: false, error: "wrong email or password" });
         }
         let token = jwt.sign(results[0], secretKey, {
@@ -72,10 +72,10 @@ AuthRouter.post("/register", async (req, res) => {
     [result.email],
     (error, results, fields) => {
       if (error) {
-        return res.status(200).json({ registration: "failed" });
+        return res.status(500).json({ registration: "failed" });
       }
       if (results.length > 0) {
-        return res.status(200).json({ msg: "user exist" });
+        return res.status(400).json({ msg: "user exist" });
       }
 
       bcrypt.genSalt(10, (err, salt) => {
