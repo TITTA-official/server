@@ -16,10 +16,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("uploads"));
 
-app.use("*", (req, res) => {
-  res.status(400).json({ error: "api route not found" });
-});
-
 //routes
 app.use("/api/v1/auth", AuthRouter);
 
@@ -32,6 +28,10 @@ app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
 app.use("/api/v1/resources", tokenValidator, ResourcesRouter);
 
 app.use("/api/v1", index);
+
+app.use("*", (req, res) => {
+  res.status(400).json({ error: "api route not found" });
+});
 
 app.listen(process.env.PORT || 8080, () => {
   //console.log("up and running");
