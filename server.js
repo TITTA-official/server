@@ -20,12 +20,12 @@ app.use(express.static("uploads"));
 app.use("/api/v1/auth", AuthRouter);
 
 //for survey
-app.use("/api/v1/admin", tokenValidator, SurveyRouter);
+app.use("/api/v1/admin/survey", tokenValidator, SurveyRouter);
 //for upload
 app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
 
 //for resource
-app.use("/api/v1/resources", ResourcesRouter);
+app.use("/api/v1/resources", tokenValidator, ResourcesRouter);
 
 app.use("/api/v1", index);
 

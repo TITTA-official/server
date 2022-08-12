@@ -34,7 +34,7 @@ AuthRouter.post("/login", async (req, res) => {
         if (!check) {
           return res
             .status(401)
-            .json({ success: false, error: "wrong email or password" });
+            .json({ success: false, error: "Wrong email or password" });
         }
         let token = jwt.sign(results[0], secretKey, {
           expiresIn: 60 * 60 * 24,
@@ -64,7 +64,7 @@ AuthRouter.post("/register", async (req, res) => {
     confPassword
   );
   if (result.details) {
-    return res.status(200).json({ error: result.details[0].message });
+    return res.status(400).json({ error: result.details[0].message });
   }
 
   connection.query(
