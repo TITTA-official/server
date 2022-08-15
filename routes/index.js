@@ -21,9 +21,9 @@ index.get("/authenticate", tokenValidator, (req, res) => {
 index.get("/users", tokenValidator, (req, res) => {
   const { type } = req.user;
   connection.query(
-    "SELECT ??, ??, ??, ?? FROM `users` WHERE `type` != ?" +
+    "SELECT ??, ??, ??, ??, ?? FROM `users` WHERE `type` != ?" +
       `${type === "admin" ? "AND `type` != 'superadmin'" : ""}`,
-    ["username", "email", "type", "id", type],
+    ["username", "email", "type", "id", "score", type],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({ results });
@@ -47,6 +47,27 @@ index.patch("/users/change_role/:id", tokenValidator, (req, res) => {
       return res.status(200).json({
         success: true,
         message: "User's role changed successfully",
+      });
+    }
+  );
+});
+
+//update user's score
+index.patch("/users/upadate_score/:id", tokenValidator, (req, res) => {
+  const { id } = req.params;
+  const { score } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "User ID required" });
+  }
+  connection.query(
+    "UPDATE `users` SET `score` = ? WHERE `id` = ?",
+    [score, id],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: error });
+      return res.status(200).json({
+        success: true,
+        message: "Score updated successfully",
       });
     }
   );
