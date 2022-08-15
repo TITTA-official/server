@@ -63,7 +63,7 @@ index.patch("/users/upadate_score/:id", tokenValidator, (req, res) => {
   connection.query(
     "UPDATE `users` SET `score` = ? WHERE `id` = ?",
     [score, id],
-    (error, results) => {
+    (error) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({
         success: true,

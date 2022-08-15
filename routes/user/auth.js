@@ -92,6 +92,7 @@ AuthRouter.post("/register", async (req, res) => {
               email,
               password: hash,
               type: "user",
+              score: 0,
             },
             (error, resultsX, fields) => {
               if (!error) {
