@@ -49,7 +49,7 @@ AuthRouter.post("/login", async (req, res) => {
           },
         });
       }
-      return res.status(200).json({ error: "user not found" });
+      return res.status(404).json({ error: "user not found" });
     }
   );
 });
