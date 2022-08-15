@@ -22,7 +22,7 @@ index.get("/users", tokenValidator, (req, res) => {
   const { type } = req.user;
   connection.query(
     "SELECT ??, ??, ??, ?? FROM `users` WHERE `type` != ?" +
-      `${type === "admin" && "AND `type` != 'superadmin'"}`,
+      `${type === "admin" ? "AND `type` != 'superadmin'" : ""}`,
     ["username", "email", "type", "id", type],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
@@ -34,18 +34,38 @@ index.get("/users", tokenValidator, (req, res) => {
 //update user's role(type)
 index.patch("/users/change_role/:id", tokenValidator, (req, res) => {
   const { id } = req.params;
+  const { type } = req.body;
 
   if (!id) {
     return res.status(400).json({ error: "User ID required" });
   }
   connection.query(
     "UPDATE `users` SET `type` = ? WHERE `id` = ?",
-    ["admin", id],
+    [type, id],
     (error, results) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({
         success: true,
         message: "User's role changed successfully",
+      });
+    }
+  );
+});
+
+index.delete("/users/delete/:id", tokenValidator, (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ error: "User ID required" });
+  }
+  connection.query(
+    "DELETE FROM `users` WHERE `id` = ?",
+    [id],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: error });
+      return res.status(200).json({
+        success: true,
+        message: "User deleted successfully",
       });
     }
   );
