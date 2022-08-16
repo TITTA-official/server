@@ -6,8 +6,8 @@ const SurveyRouter = new Router();
 //get survey
 SurveyRouter.get("/", (req, res) => {
   connection.query(
-    "SELECT ??, ?? FROM `survey` ",
-    ["question", "adminID"],
+    "SELECT ??, ??, ?? FROM `survey` ",
+    ["questionID", "question", "adminID"],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({ results });
@@ -19,8 +19,8 @@ SurveyRouter.get("/", (req, res) => {
 SurveyRouter.get("/:id", (req, res) => {
   const { id } = req.params;
   connection.query(
-    "SELECT ??, ?? FROM `survey` where `questionID` = ?",
-    ["question", "adminID", id],
+    "SELECT ??, ??, ?? FROM `survey` where `questionID` = ?",
+    ["questionID", "question", "adminID", id],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({ results });
