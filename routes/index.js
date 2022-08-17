@@ -53,7 +53,7 @@ index.patch("/users/change_role/:id", tokenValidator, (req, res) => {
 });
 
 //update user's score
-index.patch("/users/upadate_score/:id", tokenValidator, (req, res) => {
+index.patch("/users/update_score/:id", tokenValidator, (req, res) => {
   const { id } = req.params;
   const { score } = req.body;
 
