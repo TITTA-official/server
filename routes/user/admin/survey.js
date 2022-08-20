@@ -10,6 +10,10 @@ SurveyRouter.get("/", (req, res) => {
     ["questionID", "question", "adminID"],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
+      results = results.map((data) => {
+        let question = JSON.parse(data.question);
+        return { ...data, question };
+      });
       return res.status(200).json({ results });
     }
   );
@@ -23,6 +27,10 @@ SurveyRouter.get("/:id", (req, res) => {
     ["questionID", "question", "adminID", id],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
+      results = results.map((data) => {
+        let question = JSON.parse(data.question);
+        return { ...data, question };
+      });
       return res.status(200).json({ results });
     }
   );
@@ -30,15 +38,15 @@ SurveyRouter.get("/:id", (req, res) => {
 
 //post new question
 SurveyRouter.post("/post_question", (req, res) => {
-  const { question, adminID } = req.body;
+  const { data, adminID } = req.body;
 
   connection.query(
     "INSERT INTO `survey` SET ?",
     {
-      question,
+      question: JSON.stringify(data),
       adminID,
     },
-    (error, results, fields) => {
+    (error) => {
       //console.log(error);
       if (!error) {
         return res.status(201).json({
@@ -53,15 +61,15 @@ SurveyRouter.post("/post_question", (req, res) => {
 //update question with id
 SurveyRouter.patch("/update_question/:id", (req, res) => {
   const { id } = req.params;
-  const { question } = req.body;
+  const { data } = req.body;
 
   if (!id) {
     return res.status(400).json({ error: "Question ID required" });
   }
   connection.query(
     "UPDATE `survey` SET `question` = ? WHERE `questionID` = ?",
-    [question, id],
-    (error, results) => {
+    [JSON.stringify(data), id],
+    (error) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({
         success: true,
