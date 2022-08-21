@@ -15,7 +15,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static("uploads"));
 
 //routes
 app.use("/api/v1/auth", AuthRouter);
@@ -26,6 +25,9 @@ app.use("/api/v1/admin/survey", tokenValidator, SurveyRouter);
 app.use("/api/v1/response", tokenValidator, SurveyResponseRouter);
 //for upload
 app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
+
+//for upload video url
+app.use("/api/v1/admin/uploadVideo", tokenValidator, UploadVideoRouter);
 
 //for resource
 app.use("/api/v1/resources", tokenValidator, ResourcesRouter);
