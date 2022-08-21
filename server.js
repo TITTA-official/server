@@ -22,13 +22,15 @@ app.use("/api/v1/auth", AuthRouter);
 
 //for survey
 app.use("/api/v1/admin/survey", tokenValidator, SurveyRouter);
-//for response
-app.use("/api/v1/response", tokenValidator, SurveyResponseRouter);
+
 //for upload
 app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
 
 //for resource
 app.use("/api/v1/resources", tokenValidator, ResourcesRouter);
+
+//for response
+app.use("/api/v1/response", tokenValidator, SurveyResponseRouter);
 
 app.use("/api/v1", index);
 
