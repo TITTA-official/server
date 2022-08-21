@@ -30,7 +30,7 @@ app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
 app.use("/api/v1/resources", tokenValidator, ResourcesRouter);
 
 //for response
-app.use("/api/v1/response", tokenValidator, SurveyResponseRouter);
+// app.use("/api/v1/response", tokenValidator, SurveyResponseRouter);
 
 app.use("/api/v1", index);
 
