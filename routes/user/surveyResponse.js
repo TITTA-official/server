@@ -7,7 +7,7 @@ const SurveyResponseRouter = new Router();
 SurveyResponseRouter.get("/", (req, res) => {
   connection.query(
     "SELECT ??, ??, ?? FROM `response` ",
-    ["responseID", "response", "adminID"],
+    ["responseID", "response", "userID"],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
       results = results.map((data) => {
@@ -24,7 +24,7 @@ SurveyResponseRouter.get("/:id", (req, res) => {
   const { id } = req.params;
   connection.query(
     "SELECT ??, ??, ?? FROM `response` where `responseID` = ?",
-    ["responseID", "response", "adminID", id],
+    ["responseID", "response", "userID", id],
     (error, results, fields) => {
       if (error) return res.status(500).json({ error: error });
       results = results.map((data) => {
