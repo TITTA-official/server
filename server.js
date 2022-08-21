@@ -7,6 +7,7 @@ import ResourcesRouter from "./routes/user/admin/resources.js";
 import SurveyRouter from "./routes/user/admin/survey.js";
 import UploadRouter from "./routes/user/admin/upload.js";
 import AuthRouter from "./routes/user/auth.js";
+import SurveyResponseRouter from "./routes/user/surveyResponse.js";
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.use("/api/v1/auth", AuthRouter);
 
 //for survey
 app.use("/api/v1/admin/survey", tokenValidator, SurveyRouter);
+//for response
+app.use("/api/v1/response", tokenValidator, SurveyResponseRouter);
 //for upload
 app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
 
