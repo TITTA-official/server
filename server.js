@@ -6,6 +6,7 @@ import index from "./routes/index.js";
 import ResourcesRouter from "./routes/user/admin/resources.js";
 import SurveyRouter from "./routes/user/admin/survey.js";
 import UploadRouter from "./routes/user/admin/upload.js";
+import UploadVideoRouter from "./routes/user/admin/uploadVideo.js";
 import AuthRouter from "./routes/user/auth.js";
 import SurveyResponseRouter from "./routes/user/surveyResponse.js";
 
