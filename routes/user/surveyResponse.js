@@ -1,5 +1,5 @@
 import { Router } from "express";
-import connection from "../../../utils/db.js";
+import connection from "../../utils/db.js";
 
 const SurveyResponseRouter = new Router();
 
