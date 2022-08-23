@@ -5,7 +5,15 @@ const SurveyRouter = new Router();
 
 //get survey
 SurveyRouter.get("/", (req, res) => {
-  connection.query("SELECT * FROM `survey`", (error, results, fields) => {
+  connection.query("SELECT * FROM `survey`", (error, results) => {
+    if (error) return res.status(500).json({ error: error });
+    return res.status(200).json({ results });
+  });
+});
+
+//get survey linkages
+SurveyRouter.get("/linkage", (req, res) => {
+  connection.query("SELECT * FROM `option_linking`", (error, results) => {
     if (error) return res.status(500).json({ error: error });
     return res.status(200).json({ results });
   });
@@ -24,9 +32,22 @@ SurveyRouter.get("/:id", (req, res) => {
   );
 });
 
+//get question linkage by id
+SurveyRouter.get("/linkage/:id", (req, res) => {
+  const { id } = req.params;
+  connection.query(
+    "SELECT * FROM `option_linking` where `questionID` = ?",
+    [id],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: error });
+      return res.status(200).json({ results });
+    }
+  );
+});
+
 //post new question
 SurveyRouter.post("/post_question", (req, res) => {
-  const { data } = req.body;
+  const data = req.body;
   connection.query(
     "INSERT INTO `survey` SET ?",
     {
@@ -47,14 +68,14 @@ SurveyRouter.post("/post_question", (req, res) => {
 //update question with id
 SurveyRouter.patch("/update_question/:id", (req, res) => {
   const { id } = req.params;
-  const { question } = req.body;
+  const data = req.body;
 
   if (!id) {
     return res.status(400).json({ error: "Question ID required" });
   }
   connection.query(
-    "UPDATE `survey` SET `question` = ? WHERE `questionID` = ?",
-    [question, id],
+    "UPDATE `survey` SET ? WHERE `questionID` = ?",
+    [{ ...data }, id],
     (error) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({
@@ -65,22 +86,42 @@ SurveyRouter.patch("/update_question/:id", (req, res) => {
   );
 });
 
-//update options
-SurveyRouter.patch("/update_options/:id", (req, res) => {
+//post new options linkage
+SurveyRouter.post("/post_linkage", (req, res) => {
+  const data = req.body;
+  connection.query(
+    "INSERT INTO `option_linking` SET ?",
+    {
+      ...data,
+    },
+    (error) => {
+      // console.log(error);
+      if (!error) {
+        return res.status(201).json({
+          message: "Linkage was successful",
+        });
+      }
+      return res.status(500).json({ error: "internal server error" });
+    }
+  );
+});
+
+//update options linkage
+SurveyRouter.patch("/update_linkage/:id", (req, res) => {
   const { id } = req.params;
-  const { always, never, sometimes, rarely } = req.body;
+  const data = req.body;
 
   if (!id) {
     return res.status(400).json({ error: "Question ID required" });
   }
   connection.query(
-    "UPDATE `survey` SET `always` = ?, `never` = ?, `rarely` = ?, `sometimes` = ? WHERE `questionID` = ?",
-    [always, never, sometimes, rarely, id],
+    "UPDATE `option_linking` SET ? WHERE `questionID` = ?",
+    [{ ...data }, id],
     (error) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({
         success: true,
-        message: "options updated successfully",
+        message: "Linkage updated successfully",
       });
     }
   );
