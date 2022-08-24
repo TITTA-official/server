@@ -1,4 +1,6 @@
 import { Router } from "express";
+
+// import tokenValidator from "../../../middleware/tokenValidator.js";
 import connection from "../../../utils/db.js";
 
 const SurveyRouter = new Router();
@@ -129,14 +131,13 @@ SurveyRouter.patch("/update_linkage/:id", (req, res) => {
 
 SurveyRouter.delete("/delete_question/:questionID", (req, res) => {
   const { questionID } = req.params;
-  const { adminID } = req.body;
 
   if (!questionID) {
     return res.status(400).json({ error: "Question ID required" });
   }
   connection.query(
     "DELETE FROM `survey` WHERE `questionID` = ?",
-    [adminID, questionID],
+    [questionID],
     (error) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({
