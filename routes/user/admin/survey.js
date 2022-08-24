@@ -1,6 +1,4 @@
 import { Router } from "express";
-
-// import tokenValidator from "../../../middleware/tokenValidator.js";
 import connection from "../../../utils/db.js";
 
 const SurveyRouter = new Router();
