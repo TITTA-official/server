@@ -53,11 +53,11 @@ SurveyRouter.post("/post_question", (req, res) => {
     {
       ...data,
     },
-    (error) => {
-      // console.log(error);
+    (error, results) => {
       if (!error) {
         return res.status(201).json({
           message: "Question uploaded successfully",
+          questionID: results.insertId,
         });
       }
       return res.status(500).json({ error: "internal server error" });
