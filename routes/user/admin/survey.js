@@ -129,15 +129,15 @@ SurveyRouter.patch("/update_linkage/:id", (req, res) => {
   );
 });
 
-SurveyRouter.delete("/delete_question/:questionID", (req, res) => {
-  const { questionID } = req.params;
+SurveyRouter.delete("/delete_question/:id", (req, res) => {
+  const { id } = req.params;
 
-  if (!questionID) {
+  if (!id) {
     return res.status(400).json({ error: "Question ID required" });
   }
   connection.query(
     "DELETE FROM `survey` WHERE `questionID` = ?",
-    [questionID],
+    [id],
     (error) => {
       if (error) return res.status(500).json({ error: error });
       return res.status(200).json({
