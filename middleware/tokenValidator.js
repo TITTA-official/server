@@ -1,5 +1,6 @@
 import "dotenv/config";
 import jwt from "jsonwebtoken";
+import connection from "../utils/db.js";
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -11,9 +12,17 @@ const tokenValidator = (req, res, next) => {
   try {
     const verification = jwt.verify(token, secretKey);
     if (verification) {
-      let { username, id, type, email } = verification;
-      req.user = { username, id, type, email };
-      next();
+      let { id } = verification;
+      connection.query(
+        "SELECT * FROM `users` WHERE `id` = ?",
+        [id],
+        (error, results) => {
+          if (error) return res.status(500).json({ error: error });
+          let { username, id, type, email } = results[0];
+          req.user = { username, id, type, email };
+          next();
+        }
+      );
     }
   } catch (err) {
     // err

@@ -36,7 +36,8 @@ AuthRouter.post("/login", async (req, res) => {
             .status(401)
             .json({ success: false, error: "Wrong email or password" });
         }
-        let token = jwt.sign(results[0], secretKey, {
+        // console.log(results[0]);
+        let token = jwt.sign({ id: results[0].id }, secretKey, {
           expiresIn: 60 * 60 * 24,
         });
         return res.status(200).json({
@@ -94,14 +95,12 @@ AuthRouter.post("/register", async (req, res) => {
               type: "user",
               score: 0,
             },
-            (error, resultsX, fields) => {
+            (error, resultsX) => {
+              // console.log(resultsX);
               if (!error) {
                 let token = jwt.sign(
                   {
-                    username,
-                    email,
-                    password: hash,
-                    type: "user",
+                    id: resultsX.insertId,
                   },
                   secretKey,
                   {
