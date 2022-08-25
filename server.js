@@ -28,11 +28,11 @@ app.use("/api/v1/admin/upload", tokenValidator, UploadRouter);
 //for upload video url
 app.use("/api/v1/admin/uploadVideo", tokenValidator, UploadVideoRouter);
 
-//for resource
-app.use("/api/v1/resources", tokenValidator, ResourcesRouter);
-
 //for response
 app.use("/api/v1/user/response", tokenValidator, SurveyResponseRouter);
+
+//for resource
+app.use("/api/v1/resources", tokenValidator, ResourcesRouter);
 
 app.use("/api/v1", index);
 
